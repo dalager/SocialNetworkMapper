@@ -1,7 +1,7 @@
 SocialNetworkMapper
 ===================
 
-Simple tool for mapping social networks with a Google Spreadsheet data source
+Simple tool for mapping social networks with a Google Spreadsheet data source using the D3 force layout (https://github.com/mbostock/d3/wiki/Force-Layout)
 
 Usage
 ------------------------
