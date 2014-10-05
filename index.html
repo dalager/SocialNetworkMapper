@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Adoptionsmiljøet i DK</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+</head>
+<body>
+
+    <div class="infobox">
+        <div class="header"></div>
+        <div class="info"></div>
+    </div>
+
+    <div class="legends">
+        <p><span class="publiccolor">&nbsp;</span> Offentlig organisation</p>
+        <p><span class="privatecolor">&nbsp;</span> Privat organisation</p>
+        <p><span class="personcolor">&nbsp;</span> Person</p>
+      </div>
+    <script src="lib/d3.v2.js"></script>
+    <script src="lib/jquery-1.11.1.min.js"></script>
+    <script src="src/DataLoader.js"></script>
+    <script src="src/NetworkGraph.js"></script>
+
+
+    <script type="text/javascript">
+        NetworkGraph.start($(window).width(), $(window).height());
+    </script>
+
+</body>

@@ -1,0 +1,133 @@
+﻿@import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:700,300);
+
+.transform(@string){
+	-webkit-transform: @string;
+	-moz-transform: 	 @string;
+	-ms-transform: 		 @string;
+	-o-transform: 		 @string;
+}
+.transition (@transition) { 
+	-webkit-transition: @transition;  
+	-moz-transition:    @transition;
+	-ms-transition:     @transition; 
+	-o-transition:      @transition;  
+}  
+.border-radius (@radius: 5px) {
+	-webkit-border-radius: @radius;
+	-moz-border-radius:    @radius;
+	border-radius:         @radius;
+
+	-moz-background-clip:    padding;
+	-webkit-background-clip: padding-box;
+	background-clip:         padding-box;
+}
+
+@publicorg: #ff3378;
+@privateorg: #0094ff; 
+@person:#ccc;
+@linehighlight:#ff6a00;
+
+body{
+  font-family: 'Open Sans Condensed', sans-serif;
+
+    .legends{
+        background:#eee;
+        .border-radius(5px);
+        width:200px;
+        float:left;
+        padding:4px 16px;
+        position:absolute;
+        top:10px;
+        left:10px;
+    }
+}
+
+.publiccolor{background:@publicorg;}
+.privatecolor{background:@privateorg;}
+.personcolor{background:@person;}
+
+
+
+.infobox {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border: 1px solid #ccc;
+    width: 200px;
+    height: 40;
+    display: none;
+    padding: 5px;
+    background: #fff;
+    .border-radius(5px);
+    .transition(all ease-out 0.2s)
+}
+
+
+.inactive {
+    fill: none;
+    stroke-width: 2.5px;
+    stroke: #eee;
+    stroke-dasharray: 15 3;
+}
+
+.active {
+    fill: none;
+    stroke-width: 2.5px;
+    stroke: #666;
+    .transition(all ease-out 0.2s)
+}
+
+line:hover {
+    stroke-width: 7px;
+    .transition(all ease-out 0.2s)
+}
+
+
+
+.highlight {
+    stroke-width: 3px;
+}
+
+circle {
+    .transition(all ease-out 0.2s);
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+.private.org circle {
+    fill: @privateorg;
+}
+
+.public.org circle {
+    fill: @publicorg;
+}
+ 
+.person circle {
+    fill: @person;
+}
+
+
+/*.node:hover circle {
+    fill: #f0f;
+    .transform(scale(1.2, 1.2))
+}*/
+
+.node:hover text {
+    .transition(all ease-out 0.2s);
+    font-weight: bold;
+}
+
+
+
+g.person text {
+    .transition(all ease-out 0.2s);
+    font: 8px;
+    pointer-events: none;
+    fill: #666;
+}
+
+g.org text {
+    .transition(all ease-out 0.2s);
+    font: 10px;
+    pointer-events: none;
+}
