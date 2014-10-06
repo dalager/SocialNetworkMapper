@@ -22,9 +22,10 @@
 	background-clip:         padding-box;
 }
 
-@publicorg: #ff3378;
-@privateorg: #0094ff; 
-@person:#ccc;
+@publicorgcolor: #ff3378;
+@privateorgcolor: #0094ff; 
+@shopcolor: #f0f;
+@personcolor:#ccc;
 @linehighlight:#ff6a00;
 
 body{
@@ -40,11 +41,13 @@ body{
         top:10px;
         left:10px;
     }
+    footer{position:absolute;bottom:10px;left:10px;}
 }
 
-.publiccolor{background:@publicorg;}
-.privatecolor{background:@privateorg;}
-.personcolor{background:@person;}
+.publiccolor{background:@publicorgcolor;}
+.privatecolor{background:@privateorgcolor;}
+.shopcolor{background:@shopcolor}
+.personcolor{background:@personcolor;}
 
 
 
@@ -95,15 +98,17 @@ circle {
 }
 
 .private.org circle {
-    fill: @privateorg;
+    fill: @privateorgcolor;
 }
 
 .public.org circle {
-    fill: @publicorg;
+    fill: @publicorgcolor;
 }
- 
+.shop.org circle{
+    fill: @shopcolor;
+}
 .person circle {
-    fill: @person;
+    fill: @personcolor;
 }
 
 

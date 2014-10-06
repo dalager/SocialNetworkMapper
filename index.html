@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Adoptionsmiljøet i DK</title>
+    <title>Social Network Mapper</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="style/style.css">
 </head>
@@ -13,9 +13,10 @@
     </div>
 
     <div class="legends">
-        <p><span class="publiccolor">&nbsp;</span> Offentlig organisation</p>
-        <p><span class="privatecolor">&nbsp;</span> Privat organisation</p>
+        <p><span class="publiccolor">&nbsp;</span> Public organisation</p>
+        <p><span class="privatecolor">&nbsp;</span> Private organisation</p>
         <p><span class="personcolor">&nbsp;</span> Person</p>
+        <p><span class="shopcolor">&nbsp;</span> Shop</p>
       </div>
     <script src="lib/d3.v2.js"></script>
     <script src="lib/jquery-1.11.1.min.js"></script>
@@ -24,7 +25,8 @@
 
 
     <script type="text/javascript">
-        NetworkGraph.start($(window).width(), $(window).height());
+        NetworkGraph.start($(window).width(), $(window).height(),'1ImMzp4JRvRjGnpOWCWp7XttNfkUP9di7WGTr6GymKMA');
     </script>
-
+<footer>Github project: <a href="https://github.com/dalager/SocialNetworkMapper">SocialNetworkMapper</a><br>
+Data from <a href="https://docs.google.com/spreadsheets/d/1ImMzp4JRvRjGnpOWCWp7XttNfkUP9di7WGTr6GymKMA/edit?pli=1#gid=0">this spreadsheet</a> </footer>
 </body>

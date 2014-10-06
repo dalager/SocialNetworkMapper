@@ -11,31 +11,27 @@ var NetworkGraph = (function () {
         $('.infobox').fadeIn();
         $('.infobox .header').text(relation.source.name);
         
-        $('.infobox .info').text((relation.active===0?"Tidligere ":"")+  relation.role + ' i ' + relation.target.name);
+        $('.infobox .info').text((relation.active===0?"Former ":"")+  relation.role + ' in ' + relation.target.name);
     };
 
     var linkMouseOut = function (relation) {
         $('text:contains("' + relation.source.name + '")').css('font-weight', 'normal');
         $('text:contains("' + relation.target.name + '")').css('font-weight', 'normal');
 
-
         clearTimeout(timerhandle);
         timerhandle=setTimeout(function () {
             $('.infobox').fadeOut();
 
         }, 2000);
-        //     var link = $(this);
-        //  link.attr('class',link.attr('class').replace(' highlight','')); // won't work with svg
-
     }
 
 
-    var start = function (_width, _height) {
+    var start = function (_width, _height, _spreadsheetId) {
         $('.infobox').mouseover(function () {
             console.log('mouseover infobox');
             $('.infobox').css('top', $('.infobox').position().top + 50);
         });
-        DataLoader.load('1ImMzp4JRvRjGnpOWCWp7XttNfkUP9di7WGTr6GymKMA', function (links) {
+        DataLoader.load(_spreadsheetId, function (links) {
             var nodes = {};
             if (links.toArray)
                 links = links.toArray();
