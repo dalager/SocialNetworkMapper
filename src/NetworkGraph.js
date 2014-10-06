@@ -22,7 +22,7 @@ var NetworkGraph = (function () {
         timerhandle=setTimeout(function () {
             $('.infobox').fadeOut();
 
-        }, 2000);
+        }, 12000);
     }
 
 
