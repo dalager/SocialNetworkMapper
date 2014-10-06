@@ -19,16 +19,12 @@ var FakeDataLoader = (function(){
 })();
 var DataLoader = (function() {
 	var load = function(id, cb) {
-		return $.ajax('http://www.corsproxy.com/spreadsheets.google.com/feeds/list/' + id + '/od6/public/basic', {
-			Accept: 'text/xml',
-			type: 'GET',
-			crossDomain: true
+		return $.ajax('https://spreadsheets.google.com/feeds/list/' + id + '/od6/public/basic?alt=json', {
+			type: 'GET'
 		}).done(function(data) {
-			var xml=data;
-			var entries = $(xml).find('entry').map(function(i, e) {
-				var entry = $(e);
-				var navn = entry.find('title').text();
-				var content = entry.find('content').text();
+			var entries = data.feed.entry.map(function(entry) {
+				var navn = entry.title.$t;
+				var content = entry.content.$t;
 				var org = content.split(',')[0].split(':')[1].trim();
 				var active = 1;
 				if (content.split(',')[1]) {
