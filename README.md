@@ -3,6 +3,8 @@ SocialNetworkMapper
 
 Simple tool for mapping social networks with a Google Spreadsheet data source using the D3 force layout (https://github.com/mbostock/d3/wiki/Force-Layout)
 
+See it live here: http://dalager.github.io/SocialNetworkMapper/
+
 Graph
 ------------------------
 ![Graph](https://raw.githubusercontent.com/dalager/SocialNetworkMapper/master/img/SocialNetworkMapperGraph.png)
@@ -24,11 +26,3 @@ Usage
  6. Customize index.html to fit your organization types
  7. Style it in the style.less file
  8. Run it
-
-
-CORSProxy note
--------------------------
-
-As the Google Spreadsheet API doesn't support CORS requests, the DataLoader.js module will pipe the request for the Spreadsheet API through www.corsproxy.com.
-
-If you are planning to use this graph in a production setting you should replace CORSProxy with your own server side proxy for improved reliability/control/security.

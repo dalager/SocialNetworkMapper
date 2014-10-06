@@ -73,7 +73,7 @@ var NetworkGraph = (function () {
                 .enter().append("line")
                 .attr("class", function (d) {
                     console.log(d);
-                    return d.active === 1 ? "link active" : "link inactive"
+                    return d.active === "1" ? "link active" : "link inactive"
                 })
                 .on('mouseover', showInfo)
                 .on('mouseout', linkMouseOut);
