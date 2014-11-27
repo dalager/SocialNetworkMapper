@@ -38,6 +38,8 @@ var NetworkGraph = (function () {
             console.log(links);
             // Compute the distinct nodes from the links.
             links.forEach(function (link) {
+                link.source=link.source.trim();
+                link.target=link.target.trim();
                 link.source = nodes[link.source] || (nodes[link.source] = {
                     name: link.source,
                     nodetype: 'person'
