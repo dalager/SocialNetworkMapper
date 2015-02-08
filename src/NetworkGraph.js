@@ -6,7 +6,7 @@ var NetworkGraph = (function() {
                 window.console.log(msg);
             }
         },
-        enableLog = true;
+        enableLog = false;
 
     var showInfo = function(relation) {
         log(relation);
@@ -63,19 +63,27 @@ var NetworkGraph = (function() {
             var width = _width || 960,
                 height = _height || 500;
 
+            log('setting up force');
+
             var force = d3.layout.force()
-                .nodes(d3.values(nodes))
-                .links(links)
                 .size([width, height])
                 .linkDistance(90)
                 .charge(function(n) {
                     return n.nodetype === "person" ? -300 : -300;
                 })
                 .linkStrength(1)
-                .on("tick", tick)
-                .start();
+                .on("tick", tick);
 
-            var svg = d3.select("body").append("svg").attr("width", width)
+
+            var drag = force.drag()
+                 .on("dragstart", dragstart);
+
+
+            force.nodes(d3.values(nodes)).links(links);
+
+            var svg = d3.select("body")
+                .append("svg")
+                .attr("width", width)
                 .attr("height", height);
 
             var link = svg.selectAll(".link")
@@ -87,15 +95,7 @@ var NetworkGraph = (function() {
                 })
                 .on("mouseover", showInfo)
                 .on("mouseout", linkMouseOut);
-
-            function dragstart(d) {
-                d3.select(this).classed("fixed", d.fixed = true);
-            }
-
-            function dblclick(d) {
-                d3.select(this).classed("fixed", d.fixed = false);
-            }
-            //            var drag = force.drag().on("dragstart", dragstart);
+  
 
             var node = svg.selectAll(".node")
                 .data(force.nodes())
@@ -104,7 +104,7 @@ var NetworkGraph = (function() {
                     log(d);
                     return "node " + d.nodetype + " " + d.orgtype;
                 })
-                // .on("dblclick", dblclick)
+                 .on("dblclick", dblclick)
                 .call(force.drag);
 
 
@@ -121,6 +121,20 @@ var NetworkGraph = (function() {
                 }).on("mouseover", function() {
                     log(this)
                 });
+
+
+
+            force.start();
+
+
+            function dragstart(d) {
+                d3.select(this).classed("fixed", d.fixed = true);
+            }
+
+            function dblclick(d) {
+                d3.select(this).classed("fixed", d.fixed = false);
+            }
+
 
             function tick() {
                 link
