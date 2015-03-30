@@ -34,20 +34,35 @@ var NetworkGraph = (function() {
     };
 
 
-    var start = function(_width, _height, _spreadsheetId) {
+    var start = function(_width, _height, _spreadsheetId, weightFilter) {
+        var minNodeWeight = weightFilter || 1;
         $(".infobox").mouseover(function() {
             log("mouseover infobox");
             $(".infobox").css("top", $(".infobox").position().top + 50);
         });
         DataLoader.load(_spreadsheetId, function(links) {
-            var nodes = {};
             if (links.toArray)
                 links = links.toArray();
-            log(links);
+            log('spreadsheet data:');
+            //log(JSON.stringify(links));
             // Compute the distinct nodes from the links.
+
+            var nodes = {},
+                orgnames = [],
+                personnames = [],
+                linkCount = {},
+                filteredLinks = [];
+
             links.forEach(function(link) {
                 link.source = link.source.trim();
                 link.target = link.target.trim();
+                personnames.push(link.source + "");
+                orgnames.push(link.target + "");
+                var srcString = link.source + "";
+
+                // counting node weight
+                linkCount[srcString] = linkCount[srcString] ? linkCount[srcString] + 1 : 1;
+
                 link.source = nodes[link.source] || (nodes[link.source] = {
                     name: link.source,
                     nodetype: "person"
@@ -59,73 +74,128 @@ var NetworkGraph = (function() {
                 });
             });
 
+            // links will now filter out relations to nodes with a weight (number of connections) lower than [minNodeWeight]
+            links.forEach(function(link) {
+                // person is org
+                if (orgnames.indexOf(link.source.name) > -1) {
+                    filteredLinks.push(link);
+                } else {
+                    if (linkCount[link.source.name] < minNodeWeight && link.source.nodetype === 'person') {} else {
+                        filteredLinks.push(link);
+                    }
+                }
+            });
+
+            // nodes with fewer than [minNodeWeight] relations will be deleted
+            for (var person in linkCount) {
+                if (orgnames.indexOf(person) > -1) {} else {
+                    if (linkCount[person] < minNodeWeight) {
+                        delete nodes[person];
+                    }
+                }
+            }
+
+            log(JSON.stringify(filteredLinks[0]));
+            log(JSON.stringify(nodes));
+            filteredLinks.forEach(function(item) {
+                if (nodes[item.source.name]) {} else {
+                    log(item.source.name + " NOT IN NODES LIST");
+                }
+                if (!nodes[item.target.name]) {
+                    log(item.target.name + " NOT IN NODES LIST");
+                }
+            });
+
 
             var width = _width || 960,
                 height = _height || 500;
 
-            log('setting up force');
-
-            var force = d3.layout.force()
-                .size([width, height])
-                .linkDistance(90)
-                .charge(function(n) {
-                    return n.nodetype === "person" ? -300 : -300;
-                })
-                .linkStrength(1)
-                .on("tick", tick);
-
+            var force = d3.layout.force();
 
             var drag = force.drag()
-                 .on("dragstart", dragstart);
+                .on("dragstart", dragstart);
 
+            var d3nodes = d3.values(nodes);
+            force.nodes(d3nodes).links(filteredLinks);
 
-            force.nodes(d3.values(nodes)).links(links);
+            var nodes = force.nodes(),
+                filteredLinks = force.links();
 
             var svg = d3.select("body")
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height);
 
-            var link = svg.selectAll(".link")
-                .data(force.links())
-                .enter().append("line")
-                .attr("class", function(d) {
-                    log(d);
-                    return d.active === "1" ? "link active" : "link inactive";
+            function update() {
+                var link = svg.selectAll(".link")
+                    .data(filteredLinks);
+                link.enter().append("line")
+                    .attr("class", function(d) {
+                        return d.active === "1" ? "link active" : "link inactive";
+                    })
+                    .on("mouseover", showInfo)
+                    .on("mouseout", linkMouseOut);
+
+                link.exit().remove();
+
+                var node = svg.selectAll(".node")
+                    .data(nodes);
+
+                var nodeEnter = node.enter().append("g")
+                    .attr("class", function(d) {
+                        return "node " + d.nodetype + " " + d.orgtype;
+                    })
+                    .on("dblclick", dblclick)
+                    .call(force.drag);
+
+                nodeEnter.append("circle")
+                    .attr("r", 6);
+
+
+                // adding label
+                nodeEnter.append("text")
+                    .attr("x", 12)
+                    .attr("dy", ".35em")
+                    .text(function(d) {
+                        return d.name;
+                    }).on("mouseover", function() {});
+
+                node.exit().remove();
+
+                log('STARTING');
+
+                force.on("tick", function() {
+                    link
+                        .attr("x1", function(d) {
+                            return d.source.x;
+                        })
+                        .attr("y1", function(d) {
+                            return d.source.y;
+                        })
+                        .attr("x2", function(d) {
+                            return d.target.x;
+                        })
+                        .attr("y2", function(d) {
+                            return d.target.y;
+                        });
+
+                    node
+                        .attr("transform", function(d) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        });
+
                 })
-                .on("mouseover", showInfo)
-                .on("mouseout", linkMouseOut);
-  
+                force
+                    .size([width, height])
+                    .linkDistance(90)
+                    .charge(function(n, i) {
+                        return n.nodetype === "person" ? -300 : -300;
+                    })
+                    .linkStrength(1)
+                    .start();
+            }
 
-            var node = svg.selectAll(".node")
-                .data(force.nodes())
-                .enter().append("g")
-                .attr("class", function(d) {
-                    log(d);
-                    return "node " + d.nodetype + " " + d.orgtype;
-                })
-                 .on("dblclick", dblclick)
-                .call(force.drag);
-
-
-
-            node.append("circle")
-                .attr("r", 6);
-
-            // adding label
-            node.append("text")
-                .attr("x", 12)
-                .attr("dy", ".35em")
-                .text(function(d) {
-                    return d.name;
-                }).on("mouseover", function() {
-                    log(this)
-                });
-
-
-
-            force.start();
-
+            update();
 
             function dragstart(d) {
                 d3.select(this).classed("fixed", d.fixed = true);
@@ -133,28 +203,6 @@ var NetworkGraph = (function() {
 
             function dblclick(d) {
                 d3.select(this).classed("fixed", d.fixed = false);
-            }
-
-
-            function tick() {
-                link
-                    .attr("x1", function(d) {
-                        return d.source.x;
-                    })
-                    .attr("y1", function(d) {
-                        return d.source.y;
-                    })
-                    .attr("x2", function(d) {
-                        return d.target.x;
-                    })
-                    .attr("y2", function(d) {
-                        return d.target.y;
-                    });
-
-                node
-                    .attr("transform", function(d) {
-                        return "translate(" + d.x + "," + d.y + ")";
-                    });
             }
         });
     };
